@@ -3,18 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@react-hook/window-size": "^3.1.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "date-fns": "^2.29.3",
+    "qr-reader-react": "^1.0.0",
     "react": "^18.2.0",
+    "react-app-rewired": "^2.2.1",
+    "react-code-input": "^3.10.1",
+    "react-datepicker": "^4.8.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.39.4",
+    "react-input-mask": "^2.0.4",
     "react-scripts": "5.0.1",
+    "sass": "^1.56.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
+    "test": "react-app-rewired test",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

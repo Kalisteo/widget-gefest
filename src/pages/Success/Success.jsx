@@ -3,9 +3,8 @@ import successImg from '../../assets/img/success.svg'
 import rubImg from '../../assets/img/rub.svg'
 
 const Success = ({setStep, countStep}) => {
-
   return (
-    <div className="success container">
+    <div className="success container-primary">
       <div className="success__header">
             <span>
               <img src={successImg} alt=""/>
@@ -27,7 +26,7 @@ const Success = ({setStep, countStep}) => {
 
       <div className="buttons-group">
         <button className="button button__secondary" onClick={countStep}>Спасибо</button>
-        <button className="button button__primary" onClick={()=> setStep(2)}>
+        <button className="button button__primary" onClick={() => setStep(4)}>
           Добавить еще один чек
         </button>
       </div>
