@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {postData} from "../API";
 import Registration from "../pages/Registration/Registration";
 import closeImg from "../assets/img/close.svg"
 import openWidgetPcImg from "../assets/img/open-widget-pc.svg"
@@ -22,7 +23,6 @@ const Widget = () => {
   const [step, setStep] = useState(1)
   const [number, setNumber] = useState('')
   const [isMobile, setIsMobile] = useState(false)
-
   const onlyWidth = useWindowWidth()
 
   useEffect(() => {
@@ -42,6 +42,8 @@ const Widget = () => {
       setIsVisible(false)
     }
   }
+
+  postData()
 
   const steps = {
     "1": <EnterNumber number={number} setNumber={setNumber} countStep={countStep}/>,
@@ -70,9 +72,7 @@ const Widget = () => {
           </div>
         </section>
       )}
-
     </div>
-
   );
 };
 
