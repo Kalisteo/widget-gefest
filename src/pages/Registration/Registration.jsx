@@ -26,18 +26,20 @@ const Registration = ({countStep}) => {
     setValueFields(data)
   }
 
-  function sendData (e) {
+  async function sendData(e) {
     const formData = new FormData()
     formData.append("name", valueFields.name + ' ' + valueFields.surname + ' ' + valueFields.patronymic)
     formData.append("email", valueFields.email)
 
-    postData(endpoints.user, formData, `${localStorage.getItem("token")}`)
-      .then((response) => {
+    try {
+      const response = await postData(endpoints.user, formData,)
+      if (response.data.error === 0) {
         countStep()
-      })
-      .catch((e) => {
-        setError(e.response.data.error_text)
-      })
+      }
+    } catch (e) {
+      setError(e.response.data.error_text)
+    }
+
   }
 
   useEffect(() => {
@@ -130,12 +132,12 @@ const Registration = ({countStep}) => {
         </div>
 
         {Error !== "" ?
-          <p style={{marginTop:"15px"}} className="error">{Error}</p>
+          <p style={{marginTop: "15px"}} className="error">{Error}</p>
           :
-          <p style={{marginTop:"15px", height:"20px"}} className="error"></p>
+          <p style={{marginTop: "15px", height: "20px"}} className="error"></p>
         }
 
-        <button type="submit" className="button button__primary" disabled={isButtonDisabled} >
+        <button type="submit" className="button button__primary" disabled={isButtonDisabled}>
           Зарегистрироваться
         </button>
       </form>

@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import InputMask from "react-input-mask"
 import arrow from "../../assets/img/arrow.svg";
 import {useForm} from "react-hook-form";
 import DatePicker, {registerLocale} from "react-datepicker";
@@ -18,11 +17,10 @@ const Data = ({countStep, setStep}) => {
     "fn": "",
     "fd": "",
     "fp": ""
-})
+  })
 
-  const date = dateField.getFullYear() + "-" + dateField.getMonth() + "-" + dateField.getDate() + " "
+  const date = dateField.getFullYear() + "-" + (dateField.getMonth() + 1) + "-" + dateField.getDate() + " "
     + dateField.getHours() + ":" + dateField.getMinutes() + ":00"
-
   const {
     register, getFieldState, formState:
       {errors, isDirty, dirtyFields, isValid},
@@ -33,32 +31,31 @@ const Data = ({countStep, setStep}) => {
 
   const changeHandler = (e) => {
     const value = e.target.value
-    e.target.value = value.replace(/[^\d\,]/g,"")
+    e.target.value = value.replace(/[^\d\,]/g, "")
     const data = {...valueFields}
     data[e.target.id] = e.target.value
     setValueFields(data)
   }
 
-  function sendCheck (e) {
+  async function sendCheck(e) {
     const formData = new FormData()
     formData.append("t", date)
-    formData.append("s", valueFields.sum )
+    formData.append("s", valueFields.sum)
     formData.append("fn", valueFields.fn)
     formData.append("fd", valueFields.fd)
-    formData.append("fp", valueFields.fp )
+    formData.append("fp", valueFields.fp)
 
-    postData(endpoints.create, formData, `${localStorage.getItem("token")}`)
-      .then((response) => {
-        console.log(response)
+    try {
+      const response = await postData(endpoints.create, formData)
+      if (response.data.error !== 1) {
         countStep()
-      })
-      .catch((e) => {
-        console.log(e)
-        setError(e.response.data.error_text)
-      })
+      }
+    } catch (e) {
+      setError(e.response.data.error_text)
+    }
   }
 
-   return (
+  return (
     <>
       <span className="gefest__back">
         <img src={arrow} onClick={() => setStep(4)} alt=""/>
@@ -158,6 +155,13 @@ const Data = ({countStep, setStep}) => {
             </div>
 
             <span className="data__help" onClick={() => setStep(7)}>Как найти информацию о чеке</span>
+
+            {Error !== "" ?
+              <p className="error">{Error}</p>
+              :
+              <p className="error"></p>
+            }
+
           </div>
           <button className="button button__primary">
             Отправить данные чека

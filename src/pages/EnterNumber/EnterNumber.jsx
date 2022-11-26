@@ -2,23 +2,23 @@ import React, {useEffect, useState} from 'react';
 import InputMask from "react-input-mask"
 import {endpoints, postData} from "../../API";
 
-const EnterNumber = ({number, responseCode, setResponseCode, setNumber, countStep}) => {
+const EnterNumber = ({number, setNumber, countStep}) => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
   const [Error, setError] = useState('')
 
-  function sendNumber(e) {
+  async function sendNumber(e) {
     e.preventDefault()
     const formData = new FormData()
     formData.append("phone", number)
-    postData(endpoints.getCode, formData)
-      .then((response) => {
-        setResponseCode(response.data.code)
+    try {
+      const response = await postData(endpoints.getCode, formData)
+      if (response.data.error !== 1) {
         countStep()
-      })
-      .catch((e) => {
-        setError(e.response.data.error_text)
-      })
+      }
+    } catch (e) {
+      setError(e.response.data.error_text)
+    }
   }
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const EnterNumber = ({number, responseCode, setResponseCode, setNumber, countSte
           :
           null
         }
-        <button type="submit" className="button button__primary" disabled={isButtonDisabled} >
+        <button type="submit" className="button button__primary" disabled={isButtonDisabled}>
           Продолжить
         </button>
       </form>

@@ -9,24 +9,22 @@ const Download = ({countStep, setStep}) => {
   const [isSuccess, setIsSuccess] = useState()
   const [Error, setError] = useState('')
 
-  function sendQr (e) {
+  async function sendQr(e) {
     e.preventDefault()
     const formData = new FormData()
     formData.append("qr", data)
 
-    postData(endpoints.scan, {
-      qr:"t=20221125T156720&s=579.00&fn=9960440302139282&i=18459&fp=2447827354&n=1"
-    }, `${localStorage.getItem("token")}`)
-      .then((response) => {
-        if (response.data.error === 0) {
-          setError("")
-          setStep(6)
-        }
+    try {
+      const response = await postData(endpoints.scan, formData)
+      if (response.data.error === 1) {
         setError(response.data.error_text)
-      })
-      .catch((e) => {
-        setError(e.response.data.error_text)
-      })
+      } else {
+        setError("")
+        setStep(6)
+      }
+    } catch (e) {
+      setError(e.response.data.error_text)
+    }
   }
 
   const handleScanFile = (result) => {
@@ -66,29 +64,23 @@ const Download = ({countStep, setStep}) => {
         <QrReader
           ref={qrRef}
           delay="300"
-          // onError={handleErrorFile}
           onScan={handleScanFile}
           legacyMode="true"
           style={{display: 'none'}}
         />
 
-        {Error != "" ?
-          <p style={{marginTop:"15px"}} className="error">{Error}</p>
+        {Error !== "" ?
+          <p className="error">{Error}</p>
           :
-          <p style={{marginTop:"15px", height:"20px"}} className="error"></p>
+          <p className="error"></p>
         }
 
-        {/*{setError === false ?*/}
-        {/*  <p className="error">QR Code не распознан</p>*/}
-        {/*  :*/}
-        {/*  null*/}
-        {/*}*/}
         <div className="buttons-group">
           <button className="button button__secondary" onClick={countStep}>
             Ввести чек вручную
           </button>
           {isSuccess ?
-            <button className="button button__primary" >Продолжить</button>
+            <button className="button button__primary">Продолжить</button>
             :
             <button className="button button__primary" onClick={onScanFile}>Выбрать фотографию</button>
           }

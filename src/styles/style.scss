@@ -109,6 +109,9 @@ body {
   animation: backInUp .3s linear;
   transform: scale(0.8);
 
+
+  /* DataPicker */
+
   .react-datepicker-time__input {
     padding: 0 !important;
     font-size: 15px !important;
@@ -118,22 +121,12 @@ body {
     }
   }
 
-
-  .ant-upload-list {
-    margin-top: 20px;
+  .react-datepicker__input-time-container {
+    display: flex;
+    align-items: center;
   }
 
-  .ant-tooltip {
-    display: none;
-  }
-
-  .header {
-    text-align: center;
-
-    h3 {
-      margin-bottom: 25px;
-    }
-  }
+  /* ----------- */
 
   .container-primary {
     padding: 60px 70px 71px 70px;
@@ -179,9 +172,22 @@ body {
   }
 
   .error {
+    margin-top: 15px;
+    height: 20px;
+    width: 100%;
     font-family: 'SF Pro Display';
-    font-size: 18px!important;
-    color: #FA5657!important;
+    font-size: 18px !important;
+    color: #FA5657 !important;
+    text-align: center;
+
+  }
+
+  .header {
+    text-align: center;
+
+    h3 {
+      margin-bottom: 25px;
+    }
   }
 
   .form {
@@ -194,8 +200,6 @@ body {
   }
 
   .form {
-    //padding-bottom: 65px;
-
     &__content {
       width: 100%;
       display: flex;
@@ -307,6 +311,7 @@ body {
     }
 
   }
+  /* ----------- */
 
   /* REGISTRATION */
   .registration {
@@ -468,6 +473,11 @@ body {
     }
   }
 
+  /* ----------- */
+
+
+  /* Enter Number */
+
   .enter-number {
     &__header {
       margin-bottom: 80px;
@@ -503,6 +513,11 @@ body {
       text-align: center;
     }
   }
+
+  /* ----------- */
+
+
+  /* Confirm Number */
 
   .confirm-number {
     &__header {
@@ -565,6 +580,11 @@ body {
       cursor: pointer;
       border: none;
       outline: none;
+      //transition:  ;
+
+      &:hover {
+        opacity: .7;
+      }
     }
 
     &__notice {
@@ -580,6 +600,11 @@ body {
       font-weight: 600;
     }
   }
+
+  /* ----------- */
+
+
+  /* Example Check */
 
   .example-check {
     text-align: center;
@@ -603,6 +628,7 @@ body {
 /* ----------- */
 
 
+/* Animate on press button "open widget" */
 @keyframes backInUp {
   0% {
     transform: translateY(1200px) scale(.1);

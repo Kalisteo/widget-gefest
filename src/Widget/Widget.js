@@ -15,14 +15,12 @@ import {
   useWindowWidth,
   useWindowHeight,
 } from '@react-hook/window-size/throttled'
-import {postData} from "../API";
 
 const Widget = () => {
 
   const [isVisible, setIsVisible] = useState(false)
   const [step, setStep] = useState(1)
   const [number, setNumber] = useState('')
-  const [responseCode, setResponseCode] = useState('')
   const [isMobile, setIsMobile] = useState(false)
   const onlyWidth = useWindowWidth()
 
@@ -43,8 +41,8 @@ const Widget = () => {
     }
   }
   const steps = {
-    "1": <EnterNumber number={number}  responseCode={responseCode} setResponseCode={setResponseCode} setNumber={setNumber} countStep={countStep}/>,
-    "2": <ConfirmNumber number={number} responseCode={responseCode} countStep={countStep}/>,
+    "1": <EnterNumber number={number}  setNumber={setNumber} countStep={countStep}/>,
+    "2": <ConfirmNumber number={number} countStep={countStep}/>,
     "3": <Registration countStep={countStep}/>,
     "4": <Download countStep={countStep} setStep={setStep}/>,
     "5": <Data countStep={countStep} setStep={setStep}/>,
@@ -64,7 +62,6 @@ const Widget = () => {
             <span className="gefest__close">
              <img src={closeImg} onClick={() => setIsVisible(!isVisible)} alt=""/>
             </span>
-            {/*<EnterNumber number={number} setNumber={setNumber}/>*/}
             {steps[step]}
           </div>
         </section>

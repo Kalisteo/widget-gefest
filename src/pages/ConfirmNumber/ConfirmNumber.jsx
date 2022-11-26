@@ -2,11 +2,11 @@ import React, {useEffect, useState} from 'react';
 import ReactCodeInput from "react-code-input";
 import {endpoints, postData} from "../../API";
 
-const ConfirmNumber = ({number, responseCode, countStep}) => {
+const ConfirmNumber = ({number, countStep}) => {
   const [code, setCode] = useState('')
   const [Error, setError] = useState('')
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
-  const [timeLeft, setTimeLeft] = useState(1)
+  const [timeLeft, setTimeLeft] = useState(60)
   const [visibleNotice, setVisibleNotice] = useState(90)
 
   const minutes = Math.floor(timeLeft / 60);
@@ -32,22 +32,30 @@ const ConfirmNumber = ({number, responseCode, countStep}) => {
     }
   }, [code])
 
-  function sendCode(e) {
+
+  async function sendCode(e) {
     e.preventDefault()
     const formData = new FormData()
     formData.append("phone", number)
     formData.append("code", code)
-    postData(endpoints.checkCode, formData)
-      .then((response) => {
-        if (responseCode === code) {
-          localStorage.setItem("token",`Bearer ${response.data.token}`)
-          countStep()
-        } else {
-          setError(response.data.error_text)
-        }
-      })
-      .catch((e) => {
-      })
+    try {
+      const response = await postData(endpoints.checkCode, formData)
+      if (response.data.error) {
+        setError(response.data.error_text)
+      } else {
+        localStorage.setItem("token", `Bearer ${response.data.token}`)
+        countStep()
+      }
+    } catch (e) {
+      setError("Что-то пошло не так...")
+    }
+  }
+
+  async function requestCode() {
+    const formData = new FormData()
+    formData.append("phone", number)
+    setTimeLeft(60)
+    return await postData(endpoints.getCode, formData)
   }
 
   return (
@@ -71,16 +79,17 @@ const ConfirmNumber = ({number, responseCode, countStep}) => {
           </div>
 
           {Error !== "" ?
-            <p style={{marginTop:"15px"}} className="error">{Error}</p>
+            <p className="error">{Error}</p>
             :
-            <p style={{marginTop:"15px", height:"20px"}} className="error"></p>
+            <p className="error"></p>
           }
 
           {timeLeft ?
             <p className="confirm-number__timer">Запросить код повторно можно через
               0{minutes}:{seconds >= 10 ? `${seconds}` : `0${seconds}`} </p>
             :
-            <button className="confirm-number__request" onClick={console.log('1')}>Получить код повторно</button>
+            <button type="button" className="confirm-number__request" onClick={() => requestCode()}>Получить код
+              повторно</button>
           }
 
           {visibleNotice === 0 ?
