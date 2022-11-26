@@ -1,8 +1,16 @@
 import {React, useState, useEffect} from 'react';
 import {useForm} from "react-hook-form";
+import {endpoints, postData} from "../../API";
 
 const Registration = ({countStep}) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+  const [Error, setError] = useState('')
+  const [valueFields, setValueFields] = useState({
+    "surname": "",
+    "name": "",
+    "patronymic": "",
+    "email": ""
+  })
 
   const {
     register, getFieldState, formState:
@@ -12,8 +20,24 @@ const Registration = ({countStep}) => {
     mode: "onChange",
   });
 
-  const onSubmit = data => {
-    console.log(data);
+  const changeHandler = (e) => {
+    const data = {...valueFields}
+    data[e.target.id] = e.target.value
+    setValueFields(data)
+  }
+
+  function sendData (e) {
+    const formData = new FormData()
+    formData.append("name", valueFields.name + ' ' + valueFields.surname + ' ' + valueFields.patronymic)
+    formData.append("email", valueFields.email)
+
+    postData(endpoints.user, formData, `${localStorage.getItem("token")}`)
+      .then((response) => {
+        countStep()
+      })
+      .catch((e) => {
+        setError(e.response.data.error_text)
+      })
   }
 
   useEffect(() => {
@@ -27,7 +51,7 @@ const Registration = ({countStep}) => {
   return (
     <div className="registration container-primary">
       <h3>Регистрация</h3>
-      <form className="registration__form form" onSubmit={handleSubmit(onSubmit)}>
+      <form className="registration__form form" onSubmit={handleSubmit(sendData)}>
         <div className="form__content">
           <div className="form__field">
             <p>Фамилия</p>
@@ -38,8 +62,10 @@ const Registration = ({countStep}) => {
                   required: true,
                   pattern: {
                     value: /^[A-Za-zА-Яа-яё]{2,40}$/,
-                  }
+                  },
+                  onChange: e => changeHandler(e)
                 })}
+                id="surname"
                 type="text"
                 placeholder="Введите вашу фамилию"
               />
@@ -55,10 +81,13 @@ const Registration = ({countStep}) => {
                   minLength: 2,
                   pattern: {
                     value: /^[A-Za-zА-Яа-яё]{2,40}$/,
-                  }
+                  },
+                  onChange: e => changeHandler(e)
                 })}
+                id="name"
                 type="text"
                 placeholder="Введите ваше имя"
+
               />
             </span>
           </div>
@@ -70,8 +99,10 @@ const Registration = ({countStep}) => {
                 {...register('patronymic', {
                   pattern: {
                     value: /^[A-Za-zА-Яа-яё]+$/,
-                  }
+                  },
+                  onChange: e => changeHandler(e)
                 })}
+                id="patronymic"
                 type="text"
                 placeholder="Введите ваше отчество"
               />
@@ -87,17 +118,25 @@ const Registration = ({countStep}) => {
                   required: true,
                   pattern: {
                     value: /[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
-                  }
+                  },
+                  onChange: e => changeHandler(e)
                 })}
-
+                id="email"
                 type="text"
                 placeholder="Введите ваш email"
               />
             </span>
           </div>
         </div>
-        <button type="submit" className="button button__primary" disabled={isButtonDisabled}
-                onClick={countStep}>Зарегистрироваться
+
+        {Error !== "" ?
+          <p style={{marginTop:"15px"}} className="error">{Error}</p>
+          :
+          <p style={{marginTop:"15px", height:"20px"}} className="error"></p>
+        }
+
+        <button type="submit" className="button button__primary" disabled={isButtonDisabled} >
+          Зарегистрироваться
         </button>
       </form>
     </div>

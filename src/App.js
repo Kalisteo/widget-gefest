@@ -4,7 +4,7 @@ import Widget from "./Widget/Widget";
 function App() {
   return (
     <div className="App">
-        <Widget />
+      <Widget/>
     </div>
   );
 }

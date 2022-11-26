@@ -4,13 +4,24 @@ import arrow from "../../assets/img/arrow.svg";
 import {useForm} from "react-hook-form";
 import DatePicker, {registerLocale} from "react-datepicker";
 import ru from "date-fns/locale/ru/index.js";
+import {endpoints, postData} from "../../API";
 
 registerLocale('ru', ru)
 
-
 const Data = ({countStep, setStep}) => {
 
-  const [startDate, setStartDate] = useState(new Date());
+  const [dateField, setDateField] = useState(new Date());
+  const [Error, setError] = useState('')
+  const [valueFields, setValueFields] = useState({
+    "date": "",
+    "sum": "",
+    "fn": "",
+    "fd": "",
+    "fp": ""
+})
+
+  const date = dateField.getFullYear() + "-" + dateField.getMonth() + "-" + dateField.getDate() + " "
+    + dateField.getHours() + ":" + dateField.getMinutes() + ":00"
 
   const {
     register, getFieldState, formState:
@@ -20,18 +31,41 @@ const Data = ({countStep, setStep}) => {
     mode: "onChange",
   });
 
-  const onSubmit = data => {
-    console.log(data);
+  const changeHandler = (e) => {
+    const value = e.target.value
+    e.target.value = value.replace(/[^\d\,]/g,"")
+    const data = {...valueFields}
+    data[e.target.id] = e.target.value
+    setValueFields(data)
   }
 
-  return (
+  function sendCheck (e) {
+    const formData = new FormData()
+    formData.append("t", date)
+    formData.append("s", valueFields.sum )
+    formData.append("fn", valueFields.fn)
+    formData.append("fd", valueFields.fd)
+    formData.append("fp", valueFields.fp )
+
+    postData(endpoints.create, formData, `${localStorage.getItem("token")}`)
+      .then((response) => {
+        console.log(response)
+        countStep()
+      })
+      .catch((e) => {
+        console.log(e)
+        setError(e.response.data.error_text)
+      })
+  }
+
+   return (
     <>
       <span className="gefest__back">
         <img src={arrow} onClick={() => setStep(4)} alt=""/>
       </span>
       <div className="data container-primary">
         <h3>Введите данные чека</h3>
-        <form className="data__form form" onSubmit={handleSubmit(onSubmit)}>
+        <form className="data__form form" onSubmit={handleSubmit(sendCheck)}>
           <div className="form__content">
             <div className="form__field">
               <p>Дата и время покупки (Указаны в начале или конце чека)</p>
@@ -41,10 +75,10 @@ const Data = ({countStep, setStep}) => {
                 <DatePicker
                   locale="ru"
                   dateFormat="dd.MM.yyyy HH:mm"
-                  selected={startDate}
+                  selected={dateField}
                   timeInputLabel="Время:"
                   showTimeInput
-                  onChange={(date) => setStartDate(date)}
+                  onChange={(date) => setDateField(date)}
                 />
             </span>
             </div>
@@ -56,10 +90,12 @@ const Data = ({countStep, setStep}) => {
               <input
                 {...register('sum', {
                   required: true,
+                  onChange: e => changeHandler(e)
                 })}
+                id="sum"
                 type="text"
                 placeholder="Сумм чека"
-                inputmode="numeric"
+                inputMode="numeric"
               />
             </span>
             </div>
@@ -72,11 +108,13 @@ const Data = ({countStep, setStep}) => {
                 {...register('fn', {
                   required: true,
                   minLength: 16,
-                  maxLength: 16
+                  maxLength: 16,
+                  onChange: e => changeHandler(e)
                 })}
+                id="fn"
                 type="text"
                 placeholder="ФН"
-                inputmode="numeric"
+                inputMode="numeric"
               />
             </span>
             </div>
@@ -89,11 +127,13 @@ const Data = ({countStep, setStep}) => {
                 {...register('fd', {
                   required: true,
                   minLength: 3,
-                  maxLength: 5
+                  maxLength: 5,
+                  onChange: e => changeHandler(e)
                 })}
+                id="fd"
                 type="text"
                 placeholder="ФД"
-                inputmode="numeric"
+                inputMode="numeric"
               />
             </span>
             </div>
@@ -106,18 +146,20 @@ const Data = ({countStep, setStep}) => {
                 {...register('fp', {
                   required: true,
                   minLength: 8,
-                  maxLength: 10
+                  maxLength: 10,
+                  onChange: e => changeHandler(e)
                 })}
+                id="fp"
                 type="text"
                 placeholder="ФП или ФПД"
-                inputmode="numeric"
+                inputMode="numeric"
               />
             </span>
             </div>
 
             <span className="data__help" onClick={() => setStep(7)}>Как найти информацию о чеке</span>
           </div>
-          <button className="button button__primary" onClick={isValid ? countStep : null}>
+          <button className="button button__primary">
             Отправить данные чека
           </button>
         </form>

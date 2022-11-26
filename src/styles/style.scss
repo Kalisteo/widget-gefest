@@ -178,6 +178,12 @@ body {
     opacity: initial;
   }
 
+  .error {
+    font-family: 'SF Pro Display';
+    font-size: 18px!important;
+    color: #FA5657!important;
+  }
+
   .form {
     height: 100%;
     width: 100%;
@@ -354,12 +360,6 @@ body {
     &__desc {
       color: #939c9e;
       font-size: 15px;
-    }
-
-    &__error {
-      font-family: 'SF Pro Display';
-      font-size: 18px;
-      color: #FA5657;
     }
   }
 
@@ -555,6 +555,16 @@ body {
       margin-top: 80px;
       font-size: 15px;
       color: #727272
+    }
+
+    &__request {
+      margin-top: 80px;
+      font-size: 15px;
+      background-color: inherit;
+      color: #727272;
+      cursor: pointer;
+      border: none;
+      outline: none;
     }
 
     &__notice {

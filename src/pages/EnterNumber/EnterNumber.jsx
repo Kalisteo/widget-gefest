@@ -1,9 +1,25 @@
 import React, {useEffect, useState} from 'react';
 import InputMask from "react-input-mask"
+import {endpoints, postData} from "../../API";
 
-const EnterNumber = ({number, setNumber, countStep}) => {
+const EnterNumber = ({number, responseCode, setResponseCode, setNumber, countStep}) => {
 
   const [isButtonDisabled, setIsButtonDisabled] = useState(true)
+  const [Error, setError] = useState('')
+
+  function sendNumber(e) {
+    e.preventDefault()
+    const formData = new FormData()
+    formData.append("phone", number)
+    postData(endpoints.getCode, formData)
+      .then((response) => {
+        setResponseCode(response.data.code)
+        countStep()
+      })
+      .catch((e) => {
+        setError(e.response.data.error_text)
+      })
+  }
 
   useEffect(() => {
     if (number.trim().length === 16) {
@@ -19,7 +35,7 @@ const EnterNumber = ({number, setNumber, countStep}) => {
         <h3>Введите номер телефона</h3>
         <p>чтобы войти или зарегестрироваться</p>
       </div>
-      <form className="enter-number__form form">
+      <form className="enter-number__form form" onSubmit={e => sendNumber(e)}>
         <div className="form__content">
           <div className="form__field">
             <p>Номер телефона</p>
@@ -34,11 +50,14 @@ const EnterNumber = ({number, setNumber, countStep}) => {
               />
             </span>
           </div>
-
-
         </div>
-        <button type="submit" className="button button__primary" disabled={isButtonDisabled}
-                onClick={countStep}>Продолжить
+        {Error != "" ?
+          <p className="error">{Error}</p>
+          :
+          null
+        }
+        <button type="submit" className="button button__primary" disabled={isButtonDisabled} >
+          Продолжить
         </button>
       </form>
 
