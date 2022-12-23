@@ -19,7 +19,7 @@ const Data = ({countStep, setStep}) => {
     "fp": ""
   })
 
-  const date = dateField.getFullYear() + "-" + (dateField.getMonth() + 1) + "-" + dateField.getDate() + " "
+  const date = dateField.getFullYear() + "-" + (dateField.getMonth() < 10 ? "0" + (dateField.getMonth() + 1)  : (dateField.getMonth()+1))  + "-" + dateField.getDate() + " "
     + dateField.getHours() + ":" + dateField.getMinutes() + ":00"
   const {
     register, getFieldState, formState:
